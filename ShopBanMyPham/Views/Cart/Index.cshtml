@@ -1,0 +1,271 @@
+﻿@model List<CartItem>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+    <div class="container">
+        <h1 class="page-title">Shopping Cart<span><a asp-controller="Home" asp-action="Index">Home</a></span></h1>
+    </div><!-- End .container -->
+</div><!-- End .page-header -->
+
+<div class="page-content">
+    <div class="cart">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9">
+                    <table class="table table-cart table-mobile">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="product-col">
+                                            <div class="product">
+                                                <figure class="product-media">
+                                                    <a href="#">
+                                                        <img src="~/assets/product/@item.Product.Image" alt="Product image">
+                                                    </a>
+                                                </figure>
+
+                                                <h3 class="product-title">
+                                                    <a href="#">@item.Product.ProductName</a>
+                                                </h3><!-- End .product-title -->
+                                            </div><!-- End .product -->
+                                        </td>
+                                        <td class="price-col">@(item.Product.Price.HasValue ? item.Product.Price.Value.ToString("N0") : "Liên hệ shop")</td>
+                                        <td class="quantity-col">
+                                            <div class="cart-product-quantity">
+                                                <div class="input-group input-spinner">
+                                                    <div class="input-group-prepend">
+                                                        <button style="min-width: 26px" class="btn btn-decrement btn-spinner tru" data-id="@item.Product.ProductId" type="button">
+                                                            <i class="icon-minus"></i>
+                                                        </button>
+                                                    </div>
+                                                    <input type="text" style="text-align: center" class="form-control quantity-input" data-price="@item.Product.Price.GetValueOrDefault(0)" value="@item.SellQuantity" required="" placeholder="">
+                                                    <div class="input-group-append">
+                                                        <button style="min-width: 26px" class="btn btn-increment btn-spinner cong" data-id="@item.Product.ProductId" type="button">
+                                                            <i class="icon-plus"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div><!-- End .cart-product-quantity -->
+                                        </td>
+                                        <td class="total-col">@(item.Product.Price.GetValueOrDefault(0) * item.SellQuantity)</td>
+                                        <td class="remove-col"><button class="btn-remove remove-item" data-id="@item.Product.ProductId"><i class="icon-close"></i></button></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table><!-- End .table table-wishlist -->
+                </div><!-- End .col-lg-9 -->
+                <aside class="col-lg-3">
+                    <div class="summary summary-cart">
+                        <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
+
+                        <table class="table table-summary">
+                            <tbody>
+                                <tr class="summary-subtotal">
+                                    <td>Subtotal:</td>
+                                    <td>@ViewBag.Total.ToString("N0") VND</td>
+                                </tr><!-- End .summary-subtotal -->
+                                <tr class="summary-shipping">
+                                    <td>Shipping:</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+
+                                <tr class="summary-shipping-row">
+                                    <td>
+                                        <div class="custom-control custom-radio">
+                                            <input type="radio" id="free-shipping" name="shipping" class="custom-control-input">
+                                            <label class="custom-control-label" for="free-shipping">Free Shipping:</label>
+                                        </div><!-- End .custom-control -->
+                                    </td>
+                                    <td>0 VND</td>
+                                </tr><!-- End .summary-shipping-row -->
+
+                                <tr class="summary-shipping-row">
+                                    <td>
+                                        <div class="custom-control custom-radio">
+                                            <input type="radio" id="standart-shipping" name="shipping" class="custom-control-input">
+                                            <label class="custom-control-label" for="standart-shipping">Fast Shipping:</label>
+                                        </div><!-- End .custom-control -->
+                                    </td>
+                                    <td>50000 VND</td>
+                                </tr><!-- End .summary-shipping-row -->
+                                <tr class="summary-total">
+                                    <td>Total:</td>
+                                    <td>
+                                        @ViewBag.TotalShip.ToString("N0") VND
+                                    </td>
+                                </tr><!-- End .summary-total -->
+                            </tbody>
+                        </table><!-- End .table table-summary -->
+
+                        <a asp-controller="Cart" asp-action="Payment" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
+                    </div><!-- End .summary -->
+
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+                </aside><!-- End .col-lg-3 -->
+            </div><!-- End .row -->
+        </div><!-- End .container -->
+    </div><!-- End .cart -->
+</div><!-- End .page-content -->
+<script>
+    $(function () {
+        $('.tru').click(function (e) {
+            e.preventDefault();
+
+            var id = $(this).data('id');
+            var url = '@Url.Action("MinusProduct", "Cart")';
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: { id: id },
+                success: function (result) {
+                    // Refresh cart
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(function () {
+        $('.cong').click(function (e) {
+            e.preventDefault();
+
+            var id = $(this).data('id');
+            var url = '@Url.Action("PlusProduct", "Cart")';
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: { id: id },
+                success: function (result) {
+                    // Refresh cart
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(function () {
+        $('.remove-item').click(function (e) {
+            e.preventDefault();
+
+            var id = $(this).data('id');
+            var url = '@Url.Action("Remove", "Cart")';
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: { id: id },
+                success: function (result) {
+                    // Refresh cart
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        var $standardShipping = $('#standart-shipping');
+
+        // Khôi phục giá trị của ô input nếu có
+        if (localStorage.getItem('shipping') === 'fast') {
+            $standardShipping.prop('checked', true);
+        }
+
+        // Lắng nghe sự kiện change của ô input
+        $standardShipping.change(function () {
+            if ($(this).is(':checked')) {
+                var url = '@Url.Action("FastShipping", "Cart")';
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: { shipping: 'fast' },
+                    success: function (response) {
+                        // Lưu giá trị của ô input vào localStorage
+                        localStorage.setItem('shipping', 'fast');
+
+                        // Tải lại trang
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            } else {
+                // Nếu không được chọn, xóa giá trị của ô input khỏi localStorage
+                localStorage.removeItem('shipping');
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        var $freeShipping = $('#free-shipping');
+
+        // Khôi phục giá trị của ô input nếu có
+        if (localStorage.getItem('shipping') === 'free') {
+            $freeShipping.prop('checked', true);
+        }
+
+        // Lắng nghe sự kiện change của ô input
+        $freeShipping.change(function () {
+            if ($(this).is(':checked')) {
+                var url = '@Url.Action("FreeShipping", "Cart")';
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: { shipping: 'free' },
+                    success: function (response) {
+                        // Lưu giá trị của ô input vào localStorage
+                        localStorage.setItem('shipping', 'free');
+
+                        // Tải lại trang
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            } else {
+                // Nếu không được chọn, xóa giá trị của ô input khỏi localStorage
+                localStorage.removeItem('shipping');
+            }
+        });
+    });
+</script>
+

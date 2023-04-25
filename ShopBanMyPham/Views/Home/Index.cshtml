@@ -1,0 +1,121 @@
+﻿@using X.PagedList.Mvc.Core;
+@model X.PagedList.IPagedList<Product>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="intro-slider-container">
+    <div class="owl-carousel owl-simple owl-light owl-nav-inside" data-toggle="owl" data-owl-options='{"nav": false}'>
+        <div class="intro-slide" style="background-image: url(@Url.Content("~/assets/images/demos/demo-2/slider/slide-1.jpg"))">
+            <div class="container intro-content">
+                <h3 class="intro-subtitle">Bedroom Furniture</h3><!-- End .h3 intro-subtitle -->
+                <h1 class="intro-title">Find Comfort <br>That Suits You.</h1><!-- End .intro-title -->
+
+                <a href="category.html" class="btn btn-primary">
+                    <span>Shop Now</span>
+                    <i class="icon-long-arrow-right"></i>
+                </a>
+            </div><!-- End .container intro-content -->
+        </div><!-- End .intro-slide -->
+
+        <div class="intro-slide" style="background-image: url(@Url.Content("~/assets/images/demos/demo-2/slider/slide-2.jpg"))">
+            <div class="container intro-content">
+                <h3 class="intro-subtitle">Deals and Promotions</h3><!-- End .h3 intro-subtitle -->
+                <h1 class="intro-title">Ypperlig <br>Coffee Table <br><span class="text-primary"><sup>$</sup>49,99</span></h1><!-- End .intro-title -->
+
+                <a href="category.html" class="btn btn-primary">
+                    <span>Shop Now</span>
+                    <i class="icon-long-arrow-right"></i>
+                </a>
+            </div><!-- End .container intro-content -->
+        </div><!-- End .intro-slide -->
+
+        <div class="intro-slide" style="background-image: url(@Url.Content("~/assets/images/demos/demo-2/slider/slide-3.jpg"))">
+            <div class="container intro-content">
+                <h3 class="intro-subtitle">Living Room</h3><!-- End .h3 intro-subtitle -->
+                <h1 class="intro-title">
+                    Make Your Living Room <br>Work For You.<br>
+                    <span class="text-primary">
+                        <sup class="text-white font-weight-light">from</sup><sup>$</sup>9,99
+                    </span>
+                </h1><!-- End .intro-title -->
+
+                <a href="category.html" class="btn btn-primary">
+                    <span>Shop Now</span>
+                    <i class="icon-long-arrow-right"></i>
+                </a>
+            </div><!-- End .container intro-content -->
+        </div><!-- End .intro-slide -->
+    </div><!-- End .owl-carousel owl-simple -->
+
+    <span class="slider-loader text-white"></span><!-- End .slider-loader -->
+</div><!-- End .intro-slider-container -->
+
+<div class="mb-3 mb-lg-5"></div><!-- End .mb-3 mb-lg-5 -->
+
+<div class="mb-3"></div><!-- End .mb-6 -->
+
+<div class="mb-6"></div><!-- End .mb-6 -->
+
+<div class="container">
+    <div class="heading heading-center mb-3">
+        <h2 class="title">List Product</h2><!-- End .title -->
+
+        <ul class="nav nav-pills nav-border-anim justify-content-center" role="tablist">
+            @foreach (var item in (List<Category>)ViewBag.Category)
+            {
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Product" asp-action="ProductByCategory" asp-route-id="@item.CategoryId">@item.CategoryName</a>
+                </li>
+            }
+        </ul>
+    </div><!-- End .heading -->
+
+    <div class="tab-content">
+        <div class="tab-pane p-0 fade show active" id="top-all-tab" role="tabpanel" aria-labelledby="top-all-link">
+            <div class="products">
+                <div class="row justify-content-center">
+                    @if (Model != null)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <div class="col-6 col-md-4 col-lg-3 col-xl-5col">
+                                <div class="product product-11 text-center">
+                                    <figure class="product-media">
+                                        <a asp-controller="Product" asp-action="ProductDetail" asp-route-id="@item.ProductId">
+                                            <img src="~/assets/product/@item.Image" alt="Product image" class="product-image">
+                                            <img src="~/assets/product/@item.Image" alt="Product image" class="product-image-hover">
+                                        </a>
+                                    </figure><!-- End .product-media -->
+
+                                    <div class="product-body">
+                                        <h3 class="product-title"><a asp-controller="Product" asp-action="ProductDetail" asp-route-id="@item.ProductId">@item.ProductName</a></h3><!-- End .product-title -->
+                                        <div class="product-price">
+                                            @(item.Price.HasValue ? item.Price.Value.ToString("N0") : "Liên hệ shop") VND
+                                        </div><!-- End .product-price -->
+                                    </div><!-- End .product-body -->
+                                    <div class="product-action">
+                                        <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@item.ProductId" asp-route-quantity="1" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    </div><!-- End .product-action -->
+                                </div><!-- End .product -->
+                            </div>
+                            <!-- End .col-sm-6 col-md-4 col-lg-3 -->
+                        }
+                    }
+                </div><!-- End .row -->
+                <div class="pagination justify-content-center">
+                    @Html.PagedListPager(Model,page => Url.Action("Index", new {page=page}),new X.PagedList.Web.Common.PagedListRenderOptions(){
+                    LiElementClasses = new List<String> {"page-item"},
+                    PageClasses = new List<String> {"page-link"}
+                    })
+                </div>
+            </div><!-- End .products -->
+        </div><!-- .End .tab-pane -->
+    </div><!-- End .tab-content -->
+</div><!-- End .container -->
+
+<div class="container">
+    <hr class="mt-1 mb-6">
+</div><!-- End .container -->

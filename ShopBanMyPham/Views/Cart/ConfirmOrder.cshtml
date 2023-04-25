@@ -1,0 +1,42 @@
+﻿@model List<Order>
+
+@{
+    ViewData["Title"] = "ConfirmOrder";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model != null)
+{
+    <div class="row">
+        <div class="col-md-10" style="margin: 0 auto;">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Order Date</th>
+                        <th>Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.OrderId</td>
+                            <td>@(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("dd/MM/yyyy") : "Liên hệ shop") </td>
+                            <td>@item.TotalMoney.Value.ToString("N0") VND</td>
+                            <td>
+                                <a asp-controller="Cart" asp-action="ConfirmOrders" asp-route-id="@item.OrderId">Xác nhận</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <p class="text-danger">Chưa có đơn hàng nào</p>
+}
+

@@ -1,0 +1,102 @@
+﻿@model List<CartItem>
+
+@{
+    ViewData["Title"] = "Payment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-header text-center" style="background-image: url(@Url.Content("~/assets/images/page-header-bg.jpg"))">
+    <div class="container">
+        <h1 class="page-title">Checkout<span><a asp-controller="Home" asp-action="Index">Home</a></span></h1>
+    </div><!-- End .container -->
+</div><!-- End .page-header -->
+
+<div class="page-content">
+    <div class="checkout">
+        <div class="container">
+            @using (Html.BeginForm("UpdateInfo", "Customer", FormMethod.Post))
+            {
+                <div class="row">
+                    <div class="col-lg-9">
+                        <h2 class="checkout-title">Thông tin khách hàng</h2><!-- End .checkout-title -->
+
+                        <label>Full Name</label>
+                        <input type="text" value="@ViewBag.KhachHang?.CustomerName" name="fullname" class="form-control" required>
+
+                        <label>Address</label>
+                        <input type="text" value="@ViewBag.KhachHang?.Address" name="address" class="form-control" required>
+
+
+                        <label>Email</label>
+                        <input type="text" value="@ViewBag.KhachHang?.Email" name="email" class="form-control" required>
+
+
+                        <label>Phone Number</label>
+                        <input type="text" value="@ViewBag.KhachHang?.PhoneNumber" name="phoneNumber" class="form-control" required>
+
+                        <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+                            <span class="btn-text">Infomation</span>
+                            <span class="btn-hover-text">Update Infomation</span>
+                        </button>
+                    </div><!-- End .col-lg-9 -->
+                    <aside class="col-lg-3">
+                        <div class="summary">
+                            <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
+
+                            <table class="table table-summary">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td><a asp-controller="Product" asp-action="ProductDetail" asp-route-id="@item.Product.ProductId">@item.Product.ProductName</a></td>
+                                                <td>@(item.Product.Price.HasValue ? item.Product.Price.Value.ToString("N0") : "Liên hệ shop") VND</td>
+                                            </tr>
+                                        }
+                                    }
+                                    <tr class="summary-subtotal">
+                                        <td>Subtotal:</td>
+                                        <td>@ViewBag.Total.ToString("N0") VND</td>
+                                    </tr><!-- End .summary-subtotal -->
+                                    <tr>
+                                        @{
+                                            var cartItem = Model.FirstOrDefault();
+                                        }
+                                        <td>Shipping:</td>
+                                            @if(cartItem != null)
+                                            {
+                                            <td>@cartItem.ShippingCost.ToString("N0") VND</td>
+                                        }
+                                        else
+                                        {
+                                            <td>0 VND</td>
+                                        }
+                                    </tr>
+                                    <tr class="summary-total">
+                                        <td>Total:</td>
+                                        <td>@ViewBag.TotalShip.ToString("N0") VND</td>
+                                    </tr><!-- End .summary-total -->
+                                </tbody>
+                            </table><!-- End .table table-summary -->
+
+                            <a asp-controller="Cart" asp-action="ConfirmPayment" class="btn btn-outline-primary-2 btn-order btn-block" onclick="checkCustomer();" style="display:inline-block; width:100%;">
+                                <span class="btn-text">Place Order</span>
+                                <span class="btn-hover-text">Confirm</span>
+                            </a>
+                        </div><!-- End .summary -->
+                    </aside><!-- End .col-lg-3 -->
+                </div>
+
+                <!-- End .row -->
+            }
+        </div><!-- End .container -->
+    </div><!-- End .checkout -->
+</div><!-- End .page-content -->

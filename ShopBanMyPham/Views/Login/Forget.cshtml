@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewData["Title"] = "Forget";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url(@Url.Content("~/assets/images/backgrounds/login-bg.jpg"))">
+    <div class="container">
+        <div class="form-box">
+            <div class="form-tab">
+                <ul class="nav nav-pills nav-fill">
+                    <li class="nav-item">
+                        <a class="nav-link">Forget Password</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div>
+                        @using (Html.BeginForm("Forget", "Login", FormMethod.Post))
+                        {
+                            <span class="alert-danger">@ViewBag.ErrorUserName</span>
+                            <div class="form-group">
+                                <label>UserName</label>
+                                <input type="text" name="UserName" id="UserName" class="form-control" value="@ViewBag.UserName" required>
+                            </div>
+
+                            <!-- End .form-group -->
+
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" name="Password" id="Password" class="form-control" value="@ViewBag.Password" required>
+                            </div>
+
+                            <!-- End .form-group -->
+                            <div class="form-group" style="display:flex; justify-content:center;">
+                                <button type="submit" class="btn btn-outline-primary-2">
+                                    <span>Change Password</span>
+                                    <i class="icon-long-arrow-right"></i>
+                                </button>
+                            </div>
+                        }
+                    </div><!-- .End .tab-pane -->
+                </div><!-- End .tab-content -->
+                <div style="display:flex; justify-content:center;"><a asp-controller="Login" asp-action="Index" class="btn btn-success">Sign In</a></div>
+            </div><!-- End .form-tab -->
+        </div><!-- End .form-box -->
+    </div><!-- End .container -->
+</div><!-- End .login-page section-bg -->

@@ -1,0 +1,122 @@
+﻿@using Microsoft.AspNetCore.Http
+
+@inject IHttpContextAccessor HttpContextAccessor
+
+<header class="header">
+    <div class="header-top">
+        <div class="container">
+            <div class="header-left">
+                <div class="header-dropdown">
+                    <a href="#">Usd</a>
+                    <div class="header-menu">
+                        <ul>
+                            <li><a href="#">Eur</a></li>
+                            <li><a href="#">Usd</a></li>
+                        </ul>
+                    </div><!-- End .header-menu -->
+                </div><!-- End .header-dropdown -->
+
+                <div class="header-dropdown">
+                    <a href="#">Eng</a>
+                    <div class="header-menu">
+                        <ul>
+                            <li><a href="#">English</a></li>
+                            <li><a href="#">French</a></li>
+                            <li><a href="#">Spanish</a></li>
+                        </ul>
+                    </div><!-- End .header-menu -->
+                </div><!-- End .header-dropdown -->
+            </div><!-- End .header-left -->
+
+            <div class="header-right">
+                <ul class="top-menu">
+                    <li>
+                        <a href="#">Links</a>
+                        <ul>
+                            <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
+                            @if (!string.IsNullOrEmpty(HttpContextAccessor.HttpContext.Session.GetString("UserName")))
+                            {
+                                var user = new ShopBanMyPhamContext().Users.FirstOrDefault(x => x.Username == HttpContextAccessor.HttpContext.Session.GetString("UserName"));
+                                @if (user.TypeUserId == 2)
+                                {
+                                    <li>
+                                        <a asp-controller="Cart" asp-action="ConfirmOrder" class="nav-item nav-link">Confirm Order</a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Product" asp-action="AddProduct" class="nav-item nav-link">Add Product</a>
+                                    </li>
+                                }
+                            }
+                            <li>
+                                @if (!string.IsNullOrEmpty(HttpContextAccessor.HttpContext.Session.GetString("UserName")))
+                                {
+                                    <a asp-controller="Login" asp-action="Logout"><i class="icon-user"></i>Logout</a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Login" asp-action="Index"><i class="icon-user"></i>Login</a>
+                                }
+                            </li>
+                        </ul>
+                    </li>
+                </ul><!-- End .top-menu -->
+            </div><!-- End .header-right -->
+        </div><!-- End .container -->
+    </div><!-- End .header-top -->
+
+    <div class="header-middle sticky-header">
+        <div class="container">
+            <div class="header-left">
+                <button class="mobile-menu-toggler">
+                    <span class="sr-only">Toggle mobile menu</span>
+                    <i class="icon-bars"></i>
+                </button>
+
+                <a asp-controller="Home" asp-action="Index" class="logo">
+                    <img src="~/assets/images/logo.png" alt="Molla Logo" width="105" height="25">
+                </a>
+
+                <nav class="main-nav">
+                    <ul class="menu sf-arrows">
+                        <li>
+                            <a asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="About">About Us</a>
+                        </li>
+                        <li>
+                            <a asp-controller="Cart" asp-action="Index">Cart</a>
+                        </li>
+                        <li>
+                            <a asp-controller="Cart" asp-action="Payment">Checkout</a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="Contact">Contact Us</a>
+                        </li>
+                    </ul><!-- End .menu -->
+                </nav><!-- End .main-nav -->
+            </div><!-- End .header-left -->
+
+            <div class="header-right">
+                <div class="header-search">
+                    <a href="#" class="search-toggle" role="button" title="Search"><i class="icon-search"></i></a>
+                    @using (Html.BeginForm("Search", "Product", FormMethod.Post))
+                    {
+                        <div class="header-search-wrapper">
+                            <label for="q" class="sr-only">Search</label>
+                            <input type="search" class="form-control" name="searchString" id="searchString" placeholder="Search in..." required>
+                        </div>
+                        <!-- End .header-search-wrapper -->
+                    }
+                </div><!-- End .header-search -->
+
+                <div class="dropdown cart-dropdown">
+                    <a asp-controller="Cart" asp-action="Index" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" data-display="static">
+                        <i class="icon-shopping-cart"></i>
+                        <span class="cart-count">2</span>
+                    </a>
+                </div><!-- End .cart-dropdown -->
+            </div><!-- End .header-right -->
+        </div><!-- End .container -->
+    </div><!-- End .header-middle -->
+</header><!-- End .header -->
